@@ -42,7 +42,7 @@ public class Timer1 {
 
     @PreDestroy
     public void teardown() {
-        cancelTimer();
+        cancelTimerDirect();
     }
 
     public Collection<Timer> getAllTimers() {
@@ -53,11 +53,21 @@ public class Timer1 {
         return ts.getTimers();
     }
 
-    public void cancelTimer() {
+    public void cancelTimerDirect() {
         Timer timer1 = timer.get();
-        System.out.println("!!!!!! Trying to cancel " + timer1.getInfo());
+        System.out.println("Trying to cancel (via direct ref) " + timer1.getInfo());
         timer1.cancel();
         System.out.println(timer1.getInfo() + " stopped");
+    }
+
+    public void cancelTimerLoop() {
+        if (ts != null && ts.getTimers() != null) {
+            for (Timer timer : ts.getAllTimers()) {
+                System.out.println("Trying to cancel (via getTimers()) " + timer.getInfo());
+                timer.cancel();
+                System.out.println(timer.getInfo() + " stopped");
+            }
+        }
     }
 
     public Timer getTimer() {
